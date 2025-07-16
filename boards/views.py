@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import NewTopicForm, PostForm
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponseForbidden
 
 def home(request):
     boards = Board.objects.all()
@@ -92,3 +93,21 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
+
+@login_required
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    if post.created_by != request.user:
+        return HttpResponseForbidden("You are not allowed to edit this post.")
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('topic_posts', board_id=post.topic.board.pk, topic_id=post.topic.pk)
+    else:
+        form = PostForm(instance=post)
+
+    return render(request, 'boards/edit_post.html', {'post': post, 'form': form})
+

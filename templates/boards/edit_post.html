@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Edit your post</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button">Save Changes</button>
+</form>
+
+<a href="{% url 'topic_posts' post.topic.board.pk post.topic.pk %}">< Back to Topic</a>
+
+{% endblock %}
