@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Boards / {{ board.name }}</h2>
+
+<a href="{% url 'new_topic' board.pk %}" class="button">New topic</a>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 35%; text-align: left;">Topic</th>
+      <th style="width: 15%; text-align: center;">Starter</th>
+      <th style="width: 10%; text-align: center;">Replies</th>
+      <th style="width: 10%; text-align: center;">Views</th>
+      <th style="width: 30%; text-align: center;">Last Update</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for topic in topics %}
+    <tr>
+      <td>
+        <a href="{% url 'topic_posts' board.pk topic.pk %}" class="blue-link">
+          {{ topic.subject }}
+        </a>
+      </td>
+      <td style="text-align: left;">{{ topic.starter.username }}</td>
+      <td style="text-align: center;">{{ topic.get_replies_count }}</td>
+      <td style="text-align: center;">{{ topic.views }}</td>
+      <td style="text-align: left;">
+        {% with last=topic.last_updated %}
+          {% if last %}
+            {{ last.created_at|date:"Y-m-d H:i" }} by {{ last.created_by.username }}
+          {% else %}
+            No posts yet.
+          {% endif %}
+        {% endwith %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No topics yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

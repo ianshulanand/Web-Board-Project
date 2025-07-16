@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<h2 style="margin-bottom: 20px;">Boards / {{ board.name }} / New Topic</h2>
+
+<form method="post" style="background: none; border: none; padding: 0; max-width: 700px;">
+    {% csrf_token %}
+
+    <label for="{{ form.subject.id_for_label }}"><strong>Subject</strong></label><br>
+    {{ form.subject|add_class:"input-field" }}<br><br>
+
+    <label for="{{ form.message.id_for_label }}"><strong>Message</strong></label><br>
+    {{ form.message|add_class:"textarea-field" }}<br><br>
+
+    <button type="submit" class="button" style="margin-top: 10px;">Post</button>
+</form>
+
+<a href="{% url 'board_topics' board.pk %}" class="blue-link-no-underline">< Back to {{ board.name }}</a>
+
+{% endblock %}

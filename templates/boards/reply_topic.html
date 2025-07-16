@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Boards / {{ topic.board.name }} / {{ topic.subject }} / Reply</h2>
+
+<form method="post" style="background: none; border: none; padding: 0; max-width: 700px;">
+    {% csrf_token %}
+
+    <label for="{{ form.message.id_for_label }}"><strong>Message</strong></label><br>
+    <textarea name="message" id="{{ form.message.id_for_label }}" rows="6"
+              style="width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 0;">{{ form.message.value|default_if_none:'' }}</textarea><br><br>
+
+    <button type="submit" class="button" style="font-size: 15px; padding: 10px 20px;">Post a reply</button>
+</form>
+
+<hr>
+
+{% for post in posts %}
+    <div class="post-box">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>{{ post.created_by.username }}</strong>
+            <span style="font-size: 0.9em; color: #666;">{{ post.created_at|timesince }} ago</span>
+        </div>
+        <div style="margin-top: 8px;">
+            {{ post.message|linebreaks }}
+        </div>
+    </div>
+{% empty %}
+    <p>No previous posts.</p>
+{% endfor %}
+
+<a href="{% url 'topic_posts' topic.board.pk topic.pk %}" class="blue-link-no-underline">< Back to Topic</a>
+
+{% endblock %}
